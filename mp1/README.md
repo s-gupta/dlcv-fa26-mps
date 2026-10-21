@@ -181,7 +181,7 @@
     Complete the definition of the `train` and `predict` functions in the
     LinearRegressionClassifier class in [models.py](models.py). Use the same
     regularization weight ($\lambda = $`reg_wt`) for all the 2-class classifiers. 
-    When constructing labels $y_i$ for classifier for the $k$th digit, please
+    When constructing labels $y_i$ for classifier for the $`k`$th digit, please
     set $y_i$ to $+1$ if the sample is of digit $k$ and to $-1$ if the sample
     is not of digit $k$. Please use the closed form solution you derived in 3.1.
     You may use numpy functions like `np.linalg.inv` to compute the inverse of

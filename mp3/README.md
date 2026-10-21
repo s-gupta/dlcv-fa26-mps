@@ -2,7 +2,7 @@
 
 ### Instructions
 
-1. Assignment is due at **11:59 PM on Thursday Oct 22 2026**.
+1. Assignment is due at **11:59 PM on Monday Oct 26 2026**.
 
 2. See [policies](https://saurabhg.web.illinois.edu/teaching/cs444/fa2026/policies.html)
    on [class website](https://saurabhg.web.illinois.edu/teaching/cs444/fa2026).
@@ -104,7 +104,6 @@ the python virtual environment.
    processed version of the [PixMo
    Pointing](https://huggingface.co/datasets/allenai/pixmo-pointing) dataset. 
 
-
 ### Problems
 In this programming assignment, we will 
 1. implement the attention and layernorm operations using basic pytorch code, 
@@ -115,7 +114,6 @@ full-credit, and
 
 The three questions are independent from each other. Specifically, the code you
 write for Q1 does not get used for Q2 or Q3.
-
 
 1. **Implement Self Attention and Layer Norm and Multi-head Attention Time Complexity**
 
@@ -128,9 +126,11 @@ write for Q1 does not get used for Q2 or Q3.
    transformer paper ["Attention Is All You Need", Vaswani et al.,
    2017](https://arxiv.org/abs/1706.03762). The calculation of scaled
    dot-product attention is illustrated in the figure below:
-   $$\text{Attention}(Q, K, V)=\text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V$$
-   where $Q$ is the query matrix, $K$ is the key matrix, $V$ is the value
-   matrix, and $d_k$ is the dimension of the key matrix.
+
+   $$\displaystyle \text{Attention}(Q, K, V)=\text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V$$
+
+   where $`Q`$ is the query matrix, $`K`$ is the key matrix, $`V`$ is the value
+   matrix, and $`d_k`$ is the dimension of the key matrix.
    
    <div align="center">
    <img alt="attention" src="figures/attention.png" width="20%">
@@ -161,15 +161,16 @@ write for Q1 does not get used for Q2 or Q3.
    <img alt="layer-norm" src="figures/layer_norm.png" width="80%">
    </div>
    
-   For a batch of input embeddings $X \in \mathbb{R}^{B \times T \times C}$
-   (where $B$ is the batch size, $T$ is the length of the sequence, $C$ is the
+   For a batch of input embeddings $`X \in \mathbb{R}^{B \times T \times C}`$
+   (where $`B`$ is the batch size, $`T`$ is the length of the sequence, $`C`$ is the
    number of channels (hidden dimension)), learnable scales and shift
-   parameters $w \in \mathbb{R}^C$ and $b \in \mathbb{R}^C$. Layer
-   Normalization (LN) normalizes the input X as follows: $$\mathrm{LN}(X)=w
-   \frac{X-{\mathbb{E}_C}[X]}{\sqrt{\text{Var}_C[X]+\epsilon}}+b$$
+   parameters $`w \in \mathbb{R}^C`$ and $`b \in \mathbb{R}^C`$. Layer
+   Normalization (LN) normalizes the input X as follows:
 
-   Use the **biased** variance for $\text{Var}_C[X]$, i.e. normalize by the
-   number of features $C$ (divide by $C$, not $C-1$). If you use `torch.var`,
+   $$\displaystyle \mathrm{LN}(X)=w \frac{X-{\mathbb{E}_C}[X]}{\sqrt{\text{Var}_C[X]+\epsilon}}+b$$
+
+   Use the **biased** variance for $`\text{Var}_C[X]`$, i.e. normalize by the
+   number of features $`C`$ (divide by $`C`$, not $`C-1`$). If you use `torch.var`,
    pass `unbiased=False`. This matches PyTorch's `nn.LayerNorm` and is what the
    autograder expects.
 
@@ -257,27 +258,27 @@ write for Q1 does not get used for Q2 or Q3.
    Section 3.2 in this paper, where prompts are introduced at every Transformer
    layer's input space. 
 
-   The raw ViT with $N$ layers is formulated as:
-   $[\mathbf{c}_i, \mathbf{X}_i] =L_i ([\mathbf{c}_{i-1}, \mathbf{X}_{i-1}])$. 
-   Classification is done via: $\mathbf{y} =\text{Head}\left(\mathbf{c}_N\right)$ 
-   where $\mathbf{c}_i \in \mathbb{R}^d$ denotes [CLS]'s embedding and 
-   $\mathbf{X}_i$ denotes the set of features for the different tokens in the
-   image as output by the $i^{th}$ layer $L_{i}$.
+   The raw ViT with $`N`$ layers is formulated as:
+   $`[\mathbf{c}_i, \mathbf{X}_i] =L_i ([\mathbf{c}_{i-1}, \mathbf{X}_{i-1}])`$. 
+   Classification is done via: $`\mathbf{y} =\text{Head}\left(\mathbf{c}_N\right)`$ 
+   where $`\mathbf{c}_i \in \mathbb{R}^d`$ denotes [CLS]'s embedding and 
+   $`\mathbf{X}_i`$ denotes the set of features for the different tokens in the
+   image as output by the $`i^{th}`$ layer $`L_{i}`$.
 
-   Now with VPT-Deep, for $(i+1)$-th Layer $L_{i+1}$, we denote the collection
+   Now with VPT-Deep, for $`(i+1)`$-th Layer $`L_{i+1}`$, we denote the collection
    of input learnable prompts as
-   $\mathbf{P}_i=\left\lbrace \mathbf{p}_i^k \in \mathbb{R}^d \mid k \in \mathbb{N}, 1 \leq k \leq m \right\rbrace$
+   $`\mathbf{P}_i=\left\lbrace \mathbf{p}_i^k \in \mathbb{R}^d \mid k \in \mathbb{N}, 1 \leq k \leq m \right\rbrace`$
    and concatenate
    the prompts with the embeddings on the sequence length dimension. The
    deep-prompted ViT is formulated as:
-   $$\left[\mathbf{c}_i, \mathbf{Z}_i, \mathbf{X}_i\right] = L_i\left(\left[\mathbf{c}_{i-1}, \mathbf{P}_{i-1}, \mathbf{X}_{i-1}\right]\right),$$
 
-   $$\mathbf{y} =\text{Head}\left(\mathbf{c}_N\right)$$
+   $$\displaystyle \left[\mathbf c_i, \mathbf Z_i, \mathbf X_i\right] = L_i\left(\left[\mathbf c_{i-1}, \mathbf P_{i-1}, \mathbf X_{i-1}\right]\right),$$
 
-   $\mathbf{P}_i$'s are learnable parameters that are trained via back-propagation.
-   $\mathbf{Z}_i$ denotes the features computed at the prompt positions; they are
-   discarded, since the next layer receives a fresh set of prompts $\mathbf{P}_i$.
+   $$\displaystyle \mathbf{y} =\text{Head}\left(\mathbf{c}_N\right)$$
 
+   $`\mathbf{P}_i`$'s are learnable parameters that are trained via back-propagation.
+   $`\mathbf{Z}_i`$ denotes the features computed at the prompt positions; they are
+   discarded, since the next layer receives a fresh set of prompts $`\mathbf{P}_i`$.
 
    **Implementation Hints**: If you decide to implement deep Visual Prompt
    Tuning, here are some implementation notes that may be useful. You could
@@ -289,15 +290,15 @@ write for Q1 does not get used for Q2 or Q3.
    parameters or receive gradients (see the note in `finetune.py`). The `hidden_dim` of the prompt is the same as the
    `hidden_dim` of the transformer encoder, and they are both `768` in our
    implementation. The forward function passes these prompts along with the
-   input $x$ to the ViT encoder. You will also need to modify the ViT encoder
+   input $`x`$ to the ViT encoder. You will also need to modify the ViT encoder
    to accomodate prompts at each layer. Thus, you may also need to modify the
    the `forward` function of the `Encoder` class in the `vision_transformer.py`
    file.
    
    **Suggested Hyperparameters**: We found the following hyper-parameters to
    work well: 10 prompts per layer, prompts initialized with weights sampled
-   uniformly from $[-v, v]$ where $v^2 = 6/(3p^2 + d)$ with patch size $p = 32$
-   and prompt dimension $d = 768$ (the Xavier-uniform initialization used in the
+   uniformly from $`[-v, v]`$ where $`v^2 = 6/(3p^2 + d)`$ with patch size $`p = 32`$
+   and prompt dimension $`d = 768`$ (the Xavier-uniform initialization used in the
    official VPT code), `SGD` optimizer with a learning rate of `0.01`, weight
    decay of `0.01`, training for `100` epochs with the learning rate dropped by
    a factor of 10 at epochs 60 and 80. The `Trainer` in `finetune.py` already
